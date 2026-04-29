@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Zona</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header" style="align-items: center;">
+        <h3 style="margin: 0;" id="page-title">Carregando Zona...</h3>
+        <button style="width: auto; padding: 8px 15px; margin: 0; background: #6c757d;" onclick="window.close()">Fechar Guia</button>
+    </div>
+
+    <div class="grid-2x2">
+        <div class="card">
+            <div class="card-header"><div class="zone-title">Temperatura Atual</div></div>
+            <div class="temp-value" id="det-temp">-- °C</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><div class="zone-title">Status do Relé</div></div>
+            <div class="temp-value" id="det-relay" style="color: var(--text);">--</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 15px;">
+        <h4 style="margin-top: 0;">Histórico Térmico</h4>
+        <canvas id="zoneChart" height="150"></canvas>
+    </div>
+
+    <script>
+        // 1. Identifica qual zona foi solicitada pela URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const zonaId = parseInt(urlParams.get('zona')) || 0; 
+        
+        document.getElementById('page-title').innerText = `Monitoramento: Zona ${zonaId + 1}`;
+
+        // 2. Configuração do Gráfico Isolado
+        const ctx = document.getElementById('zoneChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { 
+                labels: [], 
+                datasets: [{ 
+                    label: `Temperatura Zona ${zonaId + 1} (°C)`, 
+                    data: [], 
+                    borderColor: '#dc3545', 
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)', 
+                    fill: true,
+                    tension: 0.3, 
+                    pointRadius: 3 
+                }] 
+            },
+            options: { responsive: true, animation: false }
+        });
+
+        // 3. Loop de Polling focado na Zona
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/data');
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                
+                const zonaData = data.zonas[zonaId];
+
+                // Atualiza Cards Superiores
+                document.getElementById('det-temp').innerText = zonaData.temp !== -999 ? `${zonaData.temp.toFixed(1)} °C` : "Erro";
+                
+                const relayStatus = document.getElementById('det-relay');
+                if (zonaData.releEstado) {
+                    relayStatus.innerText = "LIGADO (Resfriando)";
+                    relayStatus.style.color = "var(--success)";
+                } else {
+                    relayStatus.innerText = "DESLIGADO";
+                    relayStatus.style.color = "var(--danger)";
+                }
+
+                // Atualiza Gráfico
+                const time = new Date().toLocaleTimeString();
+                chart.data.labels.push(time);
+                chart.data.datasets[0].data.push(zonaData.temp !== -999 ? zonaData.temp : null);
+                
+                // Mantém os últimos 30 pontos para um histórico um pouco mais longo
+                if(chart.data.labels.length > 30) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                chart.update();
+
+            } catch (err) {
+                console.error("Falha ao buscar dados no detalhamento.");
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
