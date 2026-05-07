@@ -91,7 +91,7 @@ function updateUIState(idx, isAuto) {
 }
 
 // Sinalizador Visual de Teste Local
-document.getElementById('net-status').innerText = "Simulação Local (mock.js)";
+document.getElementById('net-status').innerText = "Simulação Local";
 document.getElementById('net-status').style.color = "#ffc107";
 document.getElementById('net-dot').style.background = "#ffc107";
 document.getElementById('net-dot').style.boxShadow = "none";
@@ -105,7 +105,7 @@ setInterval(() => {
 
     // Atualiza Informações Globais
     document.getElementById('global-hum').innerText = `${mockData.umidade.toFixed(1)}%`;
-    document.getElementById('sd-status').innerText = mockData.sdOk ? "OK (Simulado)" : "FALHA";
+    document.getElementById('sd-status').innerText = mockData.sdOk ? "OK" : "FALHA";
     document.getElementById('sd-status').style.color = "var(--success)";
     document.getElementById('uptime').innerText = formatTime(mockData.uptime);
 
