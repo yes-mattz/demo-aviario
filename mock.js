@@ -1,8 +1,3 @@
-// =========================================================
-// MODO SIMULAÇÃO (mock.js) - ARQUITETURA MULTIZONA
-// NÃO GRAVAR NO ESP32
-// =========================================================
-
 let mockData = {
     zonas: [
         { temp: 24.5, setpoint: 28.0, histerese: 1.0, ativo: true, releEstado: false },
@@ -14,6 +9,8 @@ let mockData = {
     sdOk: true,
     uptime: 0
 };
+
+const MOCK_STORAGE_KEY = 'aviary_mock_state';
 
 let uiInitialized = false;
 
@@ -29,6 +26,15 @@ function formatTime(seconds) {
     const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${h}:${m}:${s}`;
+}
+
+// Publica o estado atual no sessionStorage para o detalhes.html consumir
+function publishState() {
+    try {
+        sessionStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(mockData));
+    } catch (e) {
+        // sessionStorage pode estar indisponível em alguns contextos — falha silenciosa
+    }
 }
 
 // Constrói os 4 Cards no DOM
@@ -139,6 +145,9 @@ setInterval(() => {
 
         updateUIState(i, zona.ativo);
     });
+
+    // Publica o estado atualizado para o detalhes.html
+    publishState();
 }, 2000);
 
 // Interceptador de Comandos (Substitui o POST para o ESP32)
@@ -154,6 +163,9 @@ function applyControl(idx) {
     if (!isAuto) {
         mockData.zonas[idx].releEstado = document.getElementById(`relay-${idx}`).checked;
     }
+
+    // Publica imediatamente após mudança de controle
+    publishState();
 
     showToast(`Simulação: Parâmetros da Zona ${idx + 1} salvos`);
 }
