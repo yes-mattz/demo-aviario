@@ -386,5 +386,88 @@ input:disabled + .slider { cursor: not-allowed; opacity: 0.3; }
     animation: fadein 0.3s, fadeout 0.4s 2.6s;
 }
 
+@media (max-width: 600px) {
+    /* 1. Otimização do Espaço Útil */
+    body {
+        padding: 12px;
+    }
+
+    /* 2. Reestruturação do Cabeçalho */
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        padding: 14px;
+    }
+
+    .brand {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .global-stats {
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+    }
+
+    .stat-label {
+        font-size: 0.6rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    /* 3. Correção do Overflow no Grid */
+    .grid-2x2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    /* 4. Adequação da Tipografia */
+    .temp-value {
+        font-size: 1.8rem; /* Reduzido para evitar quebra de linha com valores altos */
+    }
+
+    .zone-name {
+        font-size: 1.2rem;
+    }
+
+    /* 5. Empilhamento de Controles Secundários */
+    .row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* 6. Conformidade com Áreas de Toque (Touch Targets) e Prevenção de Zoom */
+    select, 
+    input[type="number"], 
+    button {
+        min-height: 48px; /* Padrão recomendado de touch target */
+        font-size: 16px; /* Previne o zoom automático não solicitado no iOS/Safari */
+    }
+
+    .switch-container {
+        padding: 12px 14px;
+    }
+}
+
+/* Tratamento intermediário para tablets/telas médias */
+@media (min-width: 601px) and (max-width: 900px) {
+    .grid-2x2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .row {
+        flex-direction: column;
+    }
+}
+
 @keyframes fadein { from { bottom: 10px; opacity: 0; } to { bottom: 30px; opacity: 1; } }
 @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 10px; opacity: 0; } }
