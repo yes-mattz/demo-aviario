@@ -3,26 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCADA Aviário</title>
+    <title>AviControl — Sistema de Monitoramento</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="header">
-        <div>
-            <h3 style="margin: 0;">Aviário</h3>
-            <div class="status-badge"><div class="dot" id="net-dot"></div> <span id="net-status">Conectando...</span></div>
+        <div class="brand">
+            <div class="brand-icon">🐔</div>
+            <div class="brand-text">
+                <h3>AviControl</h3>
+                <span>Sistema de Controle Térmico</span>
+                <div class="status-badge">
+                    <div class="dot" id="net-dot"></div>
+                    <span id="net-status">Conectando...</span>
+                </div>
+            </div>
         </div>
+
         <div class="global-stats">
-            <div>Umid. Global: <strong id="global-hum" class="primary">--%</strong></div>
-            <div>Uptime: <strong id="uptime">00:00:00</strong></div>
-            <div>SD Card: <strong id="sd-status">Verificando</strong></div>
+            <div class="stat-item">
+                <span class="stat-label">Umidade Global</span>
+                <div class="stat-value" id="global-hum">--%</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Uptime</span>
+                <div class="stat-value" id="uptime">00:00:00</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">SD Card</span>
+                <div class="stat-value" id="sd-status" style="color: var(--text-muted);">—</div>
+            </div>
         </div>
     </div>
 
     <div class="grid-2x2" id="zones-container"></div>
 
-    <div class="card" style="margin-top: 15px; text-align: center;">
-        <button onclick="window.location.href='/api/download'" style="width: 100%; max-width: 300px;">Baixar Log (SD Card)</button>
+    <div class="card card-download">
+        <button class="btn-download" onclick="window.location.href='/api/download'">
+            ⬇ Exportar Log
+        </button>
     </div>
 
     <div id="toast">Ação executada</div>

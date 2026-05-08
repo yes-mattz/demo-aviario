@@ -53,8 +53,8 @@ function buildUI() {
             <div class="control-group">
                 <label>Modo de Operação</label>
                 <select id="mode-${i}" onchange="applyControl(${i})">
-                    <option value="auto">Automático (Exaustão)</option>
-                    <option value="manual">Manual (Direto)</option>
+                    <option value="auto">Automático</option>
+                    <option value="manual">Manual</option>
                 </select>
             </div>
             <div class="row">
